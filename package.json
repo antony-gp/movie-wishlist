@@ -1,0 +1,19 @@
+{
+  "name": "movie-wishlist",
+  "version": "0.0.1",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start:prod": "node --env-file=.env src",
+    "start:dev": "node --env-file=.env --watch src",
+    "compose": "cd docker && docker compose --env-file '../.env' down && docker compose --env-file '../.env' up -d",
+    "compose:rebuild": "cd docker && docker compose --env-file '../.env' down && docker compose --env-file '../.env' up -d --force-recreate --no-deps --build app"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "keywords": [],
+  "author": "antony-gp",
+  "license": "ISC",
+  "description": ""
+}

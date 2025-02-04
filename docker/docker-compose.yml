@@ -1,0 +1,15 @@
+# docker compose --env-file "../.env" up -d
+
+services:
+  app:
+    container_name: movie-wishlist
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - ../:/home/node/app
