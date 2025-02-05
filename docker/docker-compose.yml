@@ -1,6 +1,26 @@
 # docker compose --env-file "../.env" up -d
 
 services:
+  mysql:
+    image: mysql:latest
+    container_name: movie-wishlist-db
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:3306
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+
   app:
     container_name: movie-wishlist
     build:
@@ -13,3 +33,12 @@ services:
       - ${PORT}:${PORT}
     volumes:
       - ../:/home/node/app
+    networks:
+      - backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+networks:
+  backend:
+    driver: bridge
