@@ -25,7 +25,7 @@ Then configure your `.env` file with the following variables:
 | **MYSQL_PASSWORD**      | `string`, MySQL specified user password         |
 | **MYSQL_ROOT_PASSWORD** | `string`, MySQL root user password              |
 
-<small>\*Hot reload will only be available when **NODE_ENV** is set to `development`</small>
+<sub>\*Hot reload will only be available when **NODE_ENV** is set to `development`</sub>
 
 ---
 
@@ -83,4 +83,4 @@ Insert necessary data into tables
 npx sequelize-cli db:seed:all
 ```
 
-<small>You can follow [Sequelize's Migration](https://sequelize.org/docs/v6/other-topics/migrations) docs if you wish to learn more.</small>
+<sub>You can follow [Sequelize's Migration](https://sequelize.org/docs/v6/other-topics/migrations) docs if you wish to learn more.</sub>
