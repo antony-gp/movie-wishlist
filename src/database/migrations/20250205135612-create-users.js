@@ -4,15 +4,10 @@
  * */
 export async function up(queryInterface, Sequelize) {
   await queryInterface.createTable("users", {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
     email: {
       type: Sequelize.STRING(320),
       allowNull: false,
+      primaryKey: true,
     },
     token: {
       type: Sequelize.TEXT,
