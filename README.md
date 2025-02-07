@@ -12,18 +12,20 @@ Make sure to have both `docker` and `docker compose` on your machine.
 
 Then configure your `.env` file with the following variables:
 
-| Key                     | Value                                           |
-| ----------------------- | ----------------------------------------------- |
-| **NODE_ENV**            | Either `development` or `production`            |
-| **PORT**                | `number`, must be an available port             |
-| **TMDB_URL**            | `string`, The Movie Database url                |
-| **TMDB_TOKEN**          | `string`, The Movie Database token              |
-| **MYSQL_HOST**          | `string`, MySQL host url or docker service name |
-| **MYSQL_PORT**          | `number`, MySQL listening port                  |
-| **MYSQL_DATABASE**      | `string`, MySQL database to directly connect    |
-| **MYSQL_USER**          | `string`, MySQL username                        |
-| **MYSQL_PASSWORD**      | `string`, MySQL specified user password         |
-| **MYSQL_ROOT_PASSWORD** | `string`, MySQL root user password              |
+| Key                       | Value                                                    |
+| ------------------------- | -------------------------------------------------------- |
+| **NODE_ENV**              | Either `development` or `production`                     |
+| **PORT**                  | `number`, must be an available port                      |
+| **TMDB_URL**              | `string`, The Movie Database url                         |
+| **TMDB_TOKEN**            | `string`, The Movie Database token                       |
+| **RATE_LIMIT_WINDOW_MS**  | `number`, Rate limit window for requests in milliseconds |
+| **RATE_LIMIT_PER_WINDOW** | `number`, Rate limit maximum requests per window         |
+| **MYSQL_HOST**            | `string`, MySQL host url or docker service name          |
+| **MYSQL_PORT**            | `number`, MySQL listening port                           |
+| **MYSQL_DATABASE**        | `string`, MySQL database to directly connect             |
+| **MYSQL_USER**            | `string`, MySQL username                                 |
+| **MYSQL_PASSWORD**        | `string`, MySQL specified user password                  |
+| **MYSQL_ROOT_PASSWORD**   | `string`, MySQL root user password                       |
 
 <sub>\*Hot reload will only be available when **NODE_ENV** is set to `development`</sub>
 
@@ -84,3 +86,17 @@ npx sequelize-cli db:seed:all
 ```
 
 <sub>You can follow [Sequelize's Migration](https://sequelize.org/docs/v6/other-topics/migrations) docs if you wish to learn more.</sub>
+
+### Testing
+
+To test the application you may run
+
+```bash
+npm t
+```
+
+If you wish to have hot reload during test development, then run
+
+```bash
+npm run test:dev
+```
