@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../index.js";
+import { GenreModel, MovieGenreModel, sequelize } from "../index.js";
 
 export const MovieModel = sequelize.define(
   "Movie",
@@ -12,6 +12,11 @@ export const MovieModel = sequelize.define(
     },
     code: {
       type: DataTypes.UUID,
+      allowNull: false,
+      unique: true,
+    },
+    externalCode: {
+      type: DataTypes.STRING(255),
       allowNull: false,
       unique: true,
     },
@@ -29,7 +34,7 @@ export const MovieModel = sequelize.define(
     },
     rating: DataTypes.INTEGER.UNSIGNED,
     recommended: DataTypes.BOOLEAN,
-    sinopsis: DataTypes.TEXT,
+    synopsis: DataTypes.TEXT,
   },
   {
     timestamps: false,
@@ -37,3 +42,11 @@ export const MovieModel = sequelize.define(
     underscored: true,
   }
 );
+
+export function associate() {
+  MovieModel.belongsToMany(GenreModel, {
+    through: MovieGenreModel,
+    as: "genres",
+    foreignKey: "movieId",
+  });
+}

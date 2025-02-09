@@ -1,20 +1,21 @@
+import { TMDBService } from "../../resources/tmdb/tmdb.service.js";
+import { HttpError } from "../../utils/http.util.js";
+
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
  * */
 export async function up(queryInterface) {
   try {
-    const response = await fetch(`${process.env.TMDB_URL}/genre/movie/list`, {
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
-      },
-    });
+    const tmdbService = new TMDBService();
 
-    const data = await response.json();
+    const response = await tmdbService.request("/genre/movie/list");
 
-    if (!response.ok) throw data;
+    if (response instanceof HttpError) return;
 
-    const genres = data.genres.map(({ id, name: title }) => ({ id, title }));
+    const genres = response.genres.map(({ id, name: title }) => ({
+      id,
+      title,
+    }));
 
     await queryInterface.bulkInsert("genres", genres);
   } catch (error) {

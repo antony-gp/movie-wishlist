@@ -15,6 +15,11 @@ export async function up(queryInterface, Sequelize) {
       allowNull: false,
       unique: true,
     },
+    external_code: {
+      type: Sequelize.STRING(255),
+      allowNull: false,
+      unique: true,
+    },
     title: {
       type: Sequelize.STRING(255),
       allowNull: false,
@@ -29,7 +34,7 @@ export async function up(queryInterface, Sequelize) {
     },
     rating: Sequelize.INTEGER.UNSIGNED,
     recommended: Sequelize.BOOLEAN,
-    sinopsis: Sequelize.TEXT,
+    synopsis: Sequelize.TEXT,
   });
 
   await queryInterface.addIndex("movies", ["code"]);

@@ -1,6 +1,6 @@
 export * from "./sequelize.js";
 
-export * from "./models/genre.model.js";
-export * from "./models/movie-genre.model.js";
-export * from "./models/movie.model.js";
-export * from "./models/user.model.js";
+export { GenreModel } from "./models/genre.model.js";
+export { MovieModel } from "./models/movie.model.js";
+export { MovieGenreModel } from "./models/movie-genre.model.js";
+export { UserModel } from "./models/user.model.js";
