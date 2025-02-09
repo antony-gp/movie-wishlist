@@ -25,6 +25,10 @@ function handleUnexpectedException(error) {
   return new HttpError(500, "Internal server error.");
 }
 
+function handleJsonParseException() {
+  return new UnprocessableEntityError("Invalid JSON body.");
+}
+
 export function handleResourceNotFound(_req, _res, next) {
   next(new NotFoundError("Resource not found."));
 }
@@ -38,7 +42,21 @@ export function handleResourceNotFound(_req, _res, next) {
 export function errorHandler(error, _req, res, _next) {
   if (error instanceof HttpError) return res.status(error.status).json(error);
 
+  if (error?.type === "entity.parse.failed")
+    return res.status(422).json(handleJsonParseException());
+
   res.status(500).json(handleUnexpectedException(error));
+}
+
+/** @param {import('express').Request['query']} query */
+export function createPaginationFilter(query) {
+  const page = +query.page || 1;
+  const limit = +query.take || 10;
+
+  return {
+    offset: (page - 1) * limit,
+    limit,
+  };
 }
 
 export class HttpResponse {
@@ -51,6 +69,23 @@ export class HttpResponse {
 export class SuccessResponse extends HttpResponse {
   constructor(data = {}) {
     super(undefined, data);
+  }
+}
+
+export class PaginatedResponse extends SuccessResponse {
+  constructor(data = [], query = {}, count = 0) {
+    const page = +query.page || 1;
+    const perPageLimit = +query.take || 10;
+
+    const pageCount = ~~((count - 1) / perPageLimit) + 1;
+
+    super({
+      page,
+      pageCount,
+      perPageLimit,
+      totalItems: count,
+      data,
+    });
   }
 }
 
@@ -77,6 +112,12 @@ export class HttpError {
 export class UnauthorizedError extends HttpError {
   constructor(message = "Unauthorized.") {
     super(401, message);
+  }
+}
+
+export class ForbiddenError extends HttpError {
+  constructor(message = "Forbidden.") {
+    super(403, message);
   }
 }
 

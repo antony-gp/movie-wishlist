@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../index.js";
+import { GenreModel, MovieModel, sequelize } from "../index.js";
 
 export const MovieGenreModel = sequelize.define(
   "MovieGenre",
@@ -9,7 +9,7 @@ export const MovieGenreModel = sequelize.define(
       allowNull: false,
       primaryKey: true,
       references: {
-        model: "movies",
+        model: MovieModel,
         key: "id",
       },
     },
@@ -18,7 +18,7 @@ export const MovieGenreModel = sequelize.define(
       allowNull: false,
       primaryKey: true,
       references: {
-        model: "genres",
+        model: GenreModel,
         key: "id",
       },
     },

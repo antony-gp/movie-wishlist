@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../index.js";
+import { MovieGenreModel, MovieModel, sequelize } from "../index.js";
 
 export const GenreModel = sequelize.define(
   "Genre",
@@ -20,3 +20,11 @@ export const GenreModel = sequelize.define(
     underscored: true,
   }
 );
+
+export function associate() {
+  GenreModel.belongsToMany(MovieModel, {
+    through: MovieGenreModel,
+    as: "movies",
+    foreignKey: "genreId",
+  });
+}
