@@ -1,5 +1,6 @@
 import express from "express";
 import helmet from "helmet";
+import cors from "cors";
 import { RateLimit } from "./utils/rate-limit.util.js";
 import { associate, sequelize } from "./database/index.js";
 import { AppRouter } from "./utils/router.util.js";
@@ -12,6 +13,7 @@ const app = express();
 
 app.use(
   helmet(),
+  cors(),
   RateLimit,
   express.json(),
   AppRouter,
