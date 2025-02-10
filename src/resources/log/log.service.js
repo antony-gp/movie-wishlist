@@ -33,6 +33,8 @@ export class LogService {
       },
     });
 
+    if (search instanceof HttpError) return search;
+
     const { data, count } = this.#digest(search);
 
     return new PaginatedResponse(data, query, count);

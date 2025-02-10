@@ -3,6 +3,8 @@
 /** @typedef {import('express').NextFunction} NextFunction */
 /** @typedef {[Request, Response, NextFunction]} ExpressHandlerParams */
 
+import { INDEXES } from "../middleware/log/elasticsearch.js";
+import { LogMiddleware } from "../middleware/log/index.js";
 import { httpLogger } from "./logger.util.js";
 
 /**
@@ -57,6 +59,12 @@ export function handler(controllerHandler) {
  * @param {NextFunction} _next
  * */
 export async function errorHandler(error, req, res, _next) {
+  if (
+    !req.path.startsWith("/v1/logs/") ||
+    error?.message === "Resource not found."
+  )
+    req.logger = new LogMiddleware(INDEXES.ERROR);
+
   let status, body;
 
   if (error instanceof HttpError) {

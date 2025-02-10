@@ -1,6 +1,7 @@
 import { Client } from "@elastic/elasticsearch";
 
 export const INDEXES = {
+  ERROR: "error",
   MOVIES: "movies",
 };
 

@@ -32,7 +32,7 @@ export class MovieRepository {
       where,
       offset,
       limit,
-      attributes: { exclude: ["id"] },
+      attributes: { exclude: ["id", "userEmail"] },
       distinct: true,
       include: this.#include,
     });
@@ -46,6 +46,7 @@ export class MovieRepository {
   async create(body) {
     return this.#model.create(body, {
       fields: [
+        "userEmail",
         "externalCode",
         "code",
         "title",

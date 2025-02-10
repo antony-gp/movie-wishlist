@@ -1,4 +1,5 @@
 /** @typedef {InstanceType<import('./movie.service')['MovieService']>} MovieService */
+/** @typedef {import('express').Request & { user: string }} Request */
 
 export class MovieController {
   #service;
@@ -8,28 +9,28 @@ export class MovieController {
     this.#service = service;
   }
 
-  /** @param {import('express').Request} req */
-  async find({ query }) {
-    return this.#service.find(query);
+  /** @param {Request} req */
+  async find({ user, query }) {
+    return this.#service.find(user, query);
   }
 
-  /** @param {import('express').Request} req */
-  async findOne({ params: { code } }) {
-    return this.#service.findOne(code);
+  /** @param {Request} req */
+  async findOne({ user, params: { code } }) {
+    return this.#service.findOne(user, code);
   }
 
-  /** @param {import('express').Request} req */
-  async create({ body }) {
-    return this.#service.create(body);
+  /** @param {Request} req */
+  async create({ user, body }) {
+    return this.#service.create(user, body);
   }
 
-  /** @param {import('express').Request} req */
-  async update({ params: { code }, body }) {
-    return this.#service.update(code, body);
+  /** @param {Request} req */
+  async update({ user, params: { code }, body }) {
+    return this.#service.update(user, code, body);
   }
 
-  /** @param {import('express').Request} req */
-  async delete({ params: { code } }) {
-    return this.#service.delete(code);
+  /** @param {Request} req */
+  async delete({ user, params: { code } }) {
+    return this.#service.delete(user, code);
   }
 }

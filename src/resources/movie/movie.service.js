@@ -42,10 +42,11 @@ export class MovieService {
     this.#movieGenreRepository = movieGenreRepository;
   }
 
-  async find(query) {
+  async find(userEmail, query) {
     const filter = createPaginationFilter(query);
 
     const where = {
+      userEmail,
       ...(query.status && { status: query.status }),
     };
 
@@ -55,8 +56,8 @@ export class MovieService {
   }
 
   /** @param {string} code  */
-  async findOne(code) {
-    const movie = await this.#repository.findOne({ code });
+  async findOne(userEmail, code) {
+    const movie = await this.#repository.findOne({ userEmail, code });
 
     if (!movie)
       return new NotFoundError(`Movie with code ${code} was not found.`);
@@ -65,7 +66,7 @@ export class MovieService {
   }
 
   /** @param {{ tmdbId: string }} body  */
-  async create({ tmdbId }) {
+  async create(userEmail, { tmdbId }) {
     const response = await this.#tmdbService.request(`/movie/${tmdbId}`);
 
     if (response instanceof HttpError) return response;
@@ -85,6 +86,7 @@ export class MovieService {
     const code = randomUUID();
 
     const { id: movieId } = await this.#repository.create({
+      userEmail,
       externalCode: tmdbId,
       code,
       title,
@@ -106,8 +108,8 @@ export class MovieService {
    * @param {string} email
    * @param {{ status?: Exclude<STATUS[keyof STATUS], 'pending'>, rating?: number, recommended?: boolean }} body
    * */
-  async update(code, body) {
-    const movie = await this.#repository.findOne({ code });
+  async update(userEmail, code, body) {
+    const movie = await this.#repository.findOne({ userEmail, code });
 
     if (!movie)
       return new NotFoundError(`Movie with code ${code} was not found.`);
@@ -122,8 +124,9 @@ export class MovieService {
   }
 
   /** @param {string} code */
-  async delete(code) {
-    const { id: movieId } = (await this.#repository.findOne({ code })) || {};
+  async delete(userEmail, code) {
+    const { id: movieId } =
+      (await this.#repository.findOne({ userEmail, code })) || {};
 
     if (!movieId)
       return new NotFoundError(`Movie with code ${code} was not found.`);
@@ -141,6 +144,7 @@ export class MovieService {
     const data = row.toJSON();
 
     data.id && delete data.id;
+    data.userEmail && delete data.userEmail;
 
     data.genres = data.genres.map(({ title }) => title);
 

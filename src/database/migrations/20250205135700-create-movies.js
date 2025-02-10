@@ -10,6 +10,14 @@ export async function up(queryInterface, Sequelize) {
       allowNull: false,
       primaryKey: true,
     },
+    user_email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "email",
+      },
+    },
     code: {
       type: Sequelize.UUID,
       allowNull: false,

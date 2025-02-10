@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { GenreModel, MovieGenreModel, sequelize } from "../index.js";
+import { GenreModel, MovieGenreModel, sequelize, UserModel } from "../index.js";
 
 export const MovieModel = sequelize.define(
   "Movie",
@@ -9,6 +9,14 @@ export const MovieModel = sequelize.define(
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,
+    },
+    userEmail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: UserModel,
+        key: "email",
+      },
     },
     code: {
       type: DataTypes.UUID,
