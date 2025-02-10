@@ -4,7 +4,7 @@
 
 Develop a Node.js API to manage a movie wishlist. The API should allow an authenticated user to add movies, change states (pending, watched, rated, recommended/not recommended) and check its history. This challenge focus on building an efficient and scalable log middleware that attach an unique identifier for each movie and keeps track of all actions.
 
-### Usage
+### Configuration
 
 #### **Starting the API and Database**
 
@@ -90,9 +90,51 @@ npx sequelize-cli db:seed:all
 
 <sub>You can follow [Sequelize's Migration](https://sequelize.org/docs/v6/other-topics/migrations) docs if you wish to learn more.</sub>
 
+### Usage
+
+With the whole environment properly configured, you can now generate your `Basic` token by creating a user
+
+Hit `/v1/users` with a `POST` request contaning a `JSON` body with the following properties:
+
+- `email`: a valid email
+- `password`: a strong password (minimum length of 8 and at least 1 lowercase, uppercase, number and symbol characters)
+
+Ex:
+
+```json
+{
+  "email": "abc@def.com",
+  "password": "AbCd1@3$"
+}
+```
+
+As a response, you will get a `JSON` body with a `token` property.
+
+For every other endpoint of the API, you will need to provide this `token` as the `Authorization` header, following the pattern `Basic ${token}`
+
+Ex:
+
+| **Header**    | **Value**                            |
+| ------------- | ------------------------------------ |
+| Authorization | `Basic YWJjQGRlZi5jb206dW5kZWZpbmVk` |
+
+### Docs
+
+With the project running, you can access the documentation by navigating to `/v1/docs` on your API URL.
+
+**_Note:_** _Don't forget to authenticate with your credentials (email and password of a user you created)._
+
+---
+
+If changes or additions are needed, I strongly recommend heading over to [Swagger Editor](https://editor.swagger.io/).
+
+You can simply import `swagger-document.json`, or copy/paste it's contents and the editor will automatically convert to `YAML`.
+
+To bring the changes, you can go to `File -> Convert and save as JSON`, then replace everything in `swagger-document.json` with it's contents.
+
 ### Testing
 
-To test the application you may run
+To execute tests, you may run
 
 ```bash
 npm t
@@ -103,3 +145,9 @@ If you wish to have hot reload during test development, then run
 ```bash
 npm run test:dev
 ```
+
+### Known issues
+
+- Tests are partially done
+- Since there's no queue, create/update/delete methods can be problematic with concurrent requests
+- Error messages (specially from validators) could be standardized into factory functions instead of being fixed strings.
