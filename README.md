@@ -26,6 +26,9 @@ Then configure your `.env` file with the following variables:
 | **MYSQL_USER**            | `string`, MySQL username                                 |
 | **MYSQL_PASSWORD**        | `string`, MySQL specified user password                  |
 | **MYSQL_ROOT_PASSWORD**   | `string`, MySQL root user password                       |
+| **ELASTICSEARCH_HOST**    | `string`, Elasticsearch host url or docker service name  |
+| **ELASTICSEARCH_PORT**    | `number`, Elasticsearch listening port                   |
+| **ELASTICSEARCH_VERSION** | `string`, Elasticsearch docker image version             |
 
 <sub>\*Hot reload will only be available when **NODE_ENV** is set to `development`</sub>
 

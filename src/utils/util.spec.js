@@ -35,7 +35,7 @@ describe("Util", () => {
 
         const res = { status };
 
-        await handler(controller.success)(null, res, next);
+        await handler(controller.success)({}, res, next);
 
         strictEqual(next.mock.callCount(), 0);
         strictEqual(status.mock.callCount(), 1);
@@ -49,7 +49,7 @@ describe("Util", () => {
       it("(406) Should fail with header exists message", async () => {
         const next = mock.fn();
 
-        await handler(controller.failure)(null, null, next);
+        await handler(controller.failure)({}, {}, next);
 
         strictEqual(next.mock.callCount(), 1);
         strictEqual(next.mock.calls[0].arguments.length, 1);
@@ -64,7 +64,7 @@ describe("Util", () => {
 
         const next = mock.fn();
 
-        await handler(controller.throwable)(null, null, next);
+        await handler(controller.throwable)({}, {}, next);
 
         strictEqual(console.error.mock.callCount(), 1);
         strictEqual(console.error.mock.calls[0].arguments.length, 1);
@@ -82,7 +82,7 @@ describe("Util", () => {
       it("(404) Should return resource not found", () => {
         const next = mock.fn();
 
-        handleResourceNotFound(null, null, next);
+        handleResourceNotFound({}, {}, next);
         strictEqual(next.mock.callCount(), 1);
         strictEqual(next.mock.calls[0].arguments.length, 1);
         deepStrictEqual(
@@ -103,7 +103,7 @@ describe("Util", () => {
 
         const res = { status };
 
-        errorHandler(new HttpError(), null, res);
+        errorHandler(new HttpError(), {}, res);
 
         strictEqual(status.mock.callCount(), 1);
         strictEqual(status.mock.calls[0].arguments.length, 1);
@@ -120,7 +120,7 @@ describe("Util", () => {
 
         const res = { status };
 
-        errorHandler("error", null, res);
+        errorHandler("error", {}, res);
 
         strictEqual(console.error.mock.callCount(), 1);
         strictEqual(console.error.mock.calls[0].arguments.length, 1);
@@ -150,7 +150,7 @@ describe("Util", () => {
         const next = mock.fn();
         const req = generateReq({ page, take });
 
-        await validateFn(req, null, next);
+        await validateFn(req, {}, next);
 
         strictEqual(next.mock.callCount(), 1);
         deepStrictEqual(next.mock.calls[0].arguments, [undefined]);
@@ -160,7 +160,7 @@ describe("Util", () => {
         const next = mock.fn();
         const req = generateReq();
 
-        await validateFn(req, null, next);
+        await validateFn(req, {}, next);
 
         strictEqual(next.mock.callCount(), 1);
         deepStrictEqual(next.mock.calls[0].arguments, [undefined]);
@@ -173,7 +173,7 @@ describe("Util", () => {
         const next = mock.fn();
         const req = generateReq({ page, take });
 
-        await validateFn(req, null, next);
+        await validateFn(req, {}, next);
 
         strictEqual(next.mock.callCount(), 1);
         strictEqual(next.mock.calls[0].arguments.length, 1);
@@ -200,7 +200,7 @@ describe("Util", () => {
         const next = mock.fn();
         const req = generateReq({ page, take });
 
-        await validateFn(req, null, next);
+        await validateFn(req, {}, next);
 
         strictEqual(next.mock.callCount(), 1);
         strictEqual(next.mock.calls[0].arguments.length, 1);

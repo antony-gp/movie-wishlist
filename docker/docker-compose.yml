@@ -1,6 +1,28 @@
 # docker compose --env-file "../.env" up -d
 
 services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+    ports:
+      - "${ELASTICSEARCH_PORT}:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    healthcheck:
+      test: curl -s http://elasticsearch:${ELASTICSEARCH_PORT} >/dev/null || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   mysql:
     image: mysql:latest
     container_name: movie-wishlist-db
@@ -13,7 +35,7 @@ services:
     ports:
       - ${MYSQL_PORT}:3306
     volumes:
-      - ./.data/mysql:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     networks:
       - backend
     healthcheck:
@@ -38,7 +60,13 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
 networks:
   backend:
     driver: bridge
+
+volumes:
+  mysql-data:
+  elasticsearch-data:
