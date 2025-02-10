@@ -1,26 +1,21 @@
-/** @typedef {[import('express').Request, import('express').Response, import('express').NextFunction]} ExpressHandlerParams */
+/** @typedef {import('express').Request & { user: string, logger?: import('../middleware/log').LogMiddleware }} Request */
+/** @typedef {import('express').Response} Response */
+/** @typedef {import('express').NextFunction} NextFunction */
+/** @typedef {[Request, Response, NextFunction]} ExpressHandlerParams */
+
+import { httpLogger } from "./logger.util.js";
 
 /**
- * @param {(...[req, res, next]: ExpressHandlerParams) => Promise<HttpResponse | HttpError>} controllerHandler
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
  * */
-export function handler(controllerHandler) {
-  /**
-   * @param {ExpressHandlerParams[0]} req
-   * @param {ExpressHandlerParams[1]} res
-   * @param {ExpressHandlerParams[2]} next
-   * */
-  return async function (req, res, next) {
-    const response = await controllerHandler(req, res, next).catch(
-      handleUnexpectedException
-    );
-
-    if (response instanceof HttpError) return next(response);
-
-    res.status(response.status).json(response.data);
-  };
+export function saveParams(req, res, next) {
+  res.locals = { ...req.params };
+  next();
 }
 
-function handleUnexpectedException(error) {
+export function handleUnexpectedException(error) {
   console.error(error);
   return new HttpError(500, "Internal server error.");
 }
@@ -34,18 +29,50 @@ export function handleResourceNotFound(_req, _res, next) {
 }
 
 /**
- * @param {HttpError | Error} error
- * @param {ExpressHandlerParams[0]} _req
- * @param {ExpressHandlerParams[1]} res
- * @param {ExpressHandlerParams[2]} _next
+ * @param {(...[req, res, next]: ExpressHandlerParams) => Promise<HttpResponse | HttpError>} controllerHandler
  * */
-export function errorHandler(error, _req, res, _next) {
-  if (error instanceof HttpError) return res.status(error.status).json(error);
+export function handler(controllerHandler) {
+  /**
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * */
+  return async function (req, res, next) {
+    const response = await controllerHandler(req, res, next).catch(
+      handleUnexpectedException
+    );
 
-  if (error?.type === "entity.parse.failed")
-    return res.status(422).json(handleJsonParseException());
+    if (response instanceof HttpError) return next(response);
 
-  res.status(500).json(handleUnexpectedException(error));
+    httpLogger(req, res, response);
+
+    res.status(response.status).json(response.data);
+  };
+}
+
+/**
+ * @param {HttpError | Error} error
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} _next
+ * */
+export async function errorHandler(error, req, res, _next) {
+  let status, body;
+
+  if (error instanceof HttpError) {
+    status = error.status;
+    body = error;
+  } else if (error?.type === "entity.parse.failed") {
+    status = 422;
+    body = handleJsonParseException();
+  } else {
+    status = 500;
+    body = handleUnexpectedException(error);
+  }
+
+  httpLogger(req, res, body);
+
+  res.status(status).json(body);
 }
 
 /** @param {import('express').Request['query']} query */
