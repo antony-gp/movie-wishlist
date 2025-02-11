@@ -6,7 +6,7 @@ export const MovieValidator = {
       status: {
         optional: true,
         isIn: {
-          options: ["pending", "watched", "rated", "recommended"],
+          options: [["pending", "watched", "rated", "recommended"]],
           get errorMessage() {
             const formatter = new Intl.ListFormat("en", {
               style: "short",
@@ -14,7 +14,7 @@ export const MovieValidator = {
             });
 
             return `Query param status must be ${formatter.format(
-              this.options
+              this.options[0]
             )}.`;
           },
         },
