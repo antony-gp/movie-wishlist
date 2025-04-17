@@ -39,7 +39,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 5s
       retries: 10
 
@@ -55,6 +55,7 @@ services:
       - ${PORT}:${PORT}
     volumes:
       - ../:/home/node/app
+      - /home/node/app/node_modules
     networks:
       - backend
     depends_on:
